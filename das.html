@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>IoT Dashboard (Cyber Style)</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
+    body {
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      padding: 40px;
+      color: #00ffc3;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 36px;
+      color: #00fff2;
+      text-shadow: 0 0 10px #00fff2;
+      margin-bottom: 40px;
+    }
+
+    .device {
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid #00ffc3;
+      border-radius: 15px;
+      padding: 30px;
+      margin: 20px auto;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 0 15px rgba(0, 255, 200, 0.4);
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #ffffff;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 16px;
+      background: #00ffc3;
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 0 10px #00ffc3;
+    }
+
+    button:hover {
+      background: #00ffe5;
+      box-shadow: 0 0 20px #00ffe5;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: #00ffc3;
+    }
+
+    input[type="text"] {
+      width: 80%;
+      padding: 10px;
+      font-size: 16px;
+      background: #111;
+      color: #00ffc3;
+      border: 1px solid #00ffc3;
+      border-radius: 6px;
+    }
+
+    canvas {
+      margin-top: 20px;
+    }
+
+    .status-label {
+      margin-top: 15px;
+      font-weight: bold;
+      color: #00ffe5;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🔥 IoT Dashboard (Cyber Style)</h1>
+
+  <!-- Device 1 -->
+  <div class="device">
+    <h2>Device 1 (ON/OFF)</h2>
+    <button onclick="setDevice1('on')">เปิด</button>
+    <button onclick="setDevice1('off')">ปิด</button>
+    <div class="status-label">สถานะ: <span id="device1Status">--</span></div>
+  </div>
+
+  <!-- Device 2 -->
+  <div class="device">
+    <h2>Device 2 (Slider + Gauge)</h2>
+    <input type="range" id="slider" min="0" max="100" value="0" oninput="updateSlider(this.value)">
+    <div class="status-label">ค่าปัจจุบัน: <span id="sliderValue">0</span></div>
+    <canvas id="gauge" width="200" height="200"></canvas>
+  </div>
+
+  <!-- Device 3 -->
+  <div class="device">
+    <h2>Device 3 (ข้อความ)</h2>
+    <input type="text" id="textInput" placeholder="ใส่ข้อความ">
+    <button onclick="sendText()">ส่งข้อความ</button>
+    <div class="status-label">ข้อความล่าสุด: <span id="device3Status">--</span></div>
+  </div>
+
+  <script>
+    // Device 1 - On/Off Status
+    function setDevice1(state) {
+      document.getElementById('device1Status').innerText = state === 'on' ? 'เปิด' : 'ปิด';
+    }
+
+    // Device 2 - Gauge
+    const ctx = document.getElementById('gauge').getContext('2d');
+    const gaugeChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          data: [0, 100],
+          backgroundColor: ['#00ffc3', '#333'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        rotation: -90,
+        circumference: 180,
+        cutout: '80%',
+        plugins: {
+          tooltip: { enabled: false },
+          legend: { display: false }
+        }
+      }
+    });
+
+    function updateSlider(value) {
+      document.getElementById('sliderValue').innerText = value;
+      gaugeChart.data.datasets[0].data = [value, 100 - value];
+      gaugeChart.update();
+    }
+
+    // Device 3 - Input Text
+    function sendText() {
+      const text = document.getElementById('textInput').value;
+      document.getElementById('device3Status').innerText = text;
+    }
+  </script>
+
+</body>
+</html>
